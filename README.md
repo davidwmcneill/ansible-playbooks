@@ -1,3 +1,11 @@
+# Ansible-playground
+
+Using the best practice framework below as a template. Reworking for current standards - collections etc.
+
+# Reference
+- https://www.jeffgeerling.com/blog/2020/ansible-best-practices-using-project-local-collections-and-roles
+- https://github.com/enginyoyen/ansible-best-practises
+
 # Ansible Best Practises
 
 If infrastructures are to be treated as a code than projects that manage them must be treated as software projects. As your infrastructure code gets bigger and bigger you have more problems to deal with. Code layout, variable precedence, small hacks here and there. Therefore, the organization of your code is very important, and in this repository you can find some of the best practices (in our opinion) to manage your infrastructure code. Problems that are addressed are:

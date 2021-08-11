@@ -1,0 +1,80 @@
+---
+# tasks file for adriagalin.motd
+- name: Remove default motd configuration
+  block:
+    - name: Create backup folder
+      file:
+        path: /etc/update-motd.d/backups
+        state: directory
+    - name: Check if we need to move files
+      shell: ls /etc/update-motd.d/ --ignore=99-footer --ignore=20-update --ignore=backups
+      register: move_output
+    - name: Move files to backup folder
+      shell: mv $(ls --ignore=99-footer --ignore=20-update --ignore=backups) /etc/update-motd.d/backups/
+      args:
+        chdir: /etc/update-motd.d/
+      when: move_output.stdout != ""
+  when: ag_motd_remove_default_config
+
+- name: Restore default motd configuration from backups folder
+  shell: mv /etc/update-motd.d/backups/* /etc/update-motd.d/
+  when: ag_motd_restore_default_config and not ag_motd_remove_default_config
+
+- name: Add 99-footer file
+  copy:
+    src: 99-footer
+    dest: /etc/update-motd.d/99-footer
+    owner: root
+    group: root
+    mode: 0755
+  when: ag_motd_add_footer | bool
+  tags: ["motd", "common"]
+
+- name: Delete 99-footer file
+  file:
+    path: /etc/update-motd.d/99-footer
+    state: absent
+  when: not ag_motd_add_footer | bool
+  tags: ["motd", "common"]
+
+- name: Add dynamic message before motd
+  template:
+    src: etc/update-motd.d/20-update.j2
+    dest: /etc/update-motd.d/20-update
+    mode: a+x
+  when: ag_motd_add_update | bool
+  tags: ["motd", "common"]
+
+- name: Remove dynamic message before motd
+  file:
+    path: /etc/update-motd.d/20-update
+    state: absent
+  when: not ag_motd_add_update | bool
+  tags: ["motd", "common"]
+
+- name: Delete /etc/motd file
+  file:
+    path: /etc/motd
+    state: absent
+  when: ag_motd_add_footer | bool
+  tags: ["motd", "common"]
+
+- name: Check motd tail supported
+  stat:
+    path: /etc/update-motd.d/99-footer
+  register: motd_tail_supported
+  tags: ["motd", "common"]
+
+- name: Add motd tail
+  template:
+    src: etc/motd.j2
+    dest: /etc/motd.tail
+  when: motd_tail_supported.stat.exists | bool
+  tags: ["motd", "common"]
+
+- name: Add motd
+  template:
+    src: etc/motd.j2
+    dest: /etc/motd
+  when: not motd_tail_supported.stat.exists | bool
+  tags: ["motd", "common"]

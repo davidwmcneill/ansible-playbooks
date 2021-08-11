@@ -1,0 +1,31 @@
+language: python
+
+python:
+  - 3.6
+
+sudo: false
+
+env:
+  - ANSIBLE_VERSION=latest
+  - ANSIBLE_VERSION=2.9
+
+branches:
+  only:
+    - master
+
+install:
+  # Install Ansible.
+  - if [ "$ANSIBLE_VERSION" = "latest" ]; then pip install ansible; else pip install ansible==$ANSIBLE_VERSION; fi
+  # Add ansible.cfg to pick up roles path.
+  - printf "[defaults]\nroles_path = ../" > ansible.cfg
+
+script:
+  # Check the role/playbook's syntax.
+  - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
+
+matrix:
+  fast_finish: true
+
+notifications:
+  email: false
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

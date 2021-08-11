@@ -2,8 +2,12 @@
 
 - name: webservers.yml | All roles
   hosts: webservers
-  sudo: True
+  become: true
+
+  collections:
+    - nginxinc.nginx_core
 
   roles:
     - { role: common,                   tags: ["common"] }
-    - { role: ansible-nginx,            tags: ["nginx"] }
+    - { role: nginx,                    tags: ["nginx"] }
+

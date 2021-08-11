@@ -24,3 +24,7 @@
 - src: git+https://github.com/adriagalin/ansible.motd.git
   version: "3.2.0"
   name: motd
+
+- src: git+https://github.com/geerlingguy/ansible-role-docker
+  version: "4.0.0"
+  name: docker

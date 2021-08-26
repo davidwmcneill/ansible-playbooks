@@ -1,0 +1,12 @@
+---
+
+- name: gitlab.yml | All roles
+  hosts: gitlab
+  become: true
+
+
+  roles:
+    - { role: common,                   tags: ["common"] }
+    - { role: postfix,                   tags: ["postfix"] }
+    # - { role: gitlab,                    tags: ["gitlab"] }
+

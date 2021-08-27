@@ -8,5 +8,5 @@
   roles:
     - { role: common,                   tags: ["common"] }
     - { role: postfix,                   tags: ["postfix"] }
-    # - { role: gitlab,                    tags: ["gitlab"] }
+    - { role: gitlab,                    tags: ["gitlab"] }
 
